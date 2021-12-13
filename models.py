@@ -90,6 +90,7 @@ class MuZeroFullyConnectedNetwork(AbstractNetwork):
         fc_representation_layers,
         fc_dynamics_layers,
         support_size,
+        include_previous_hidden_state=False,
     ):
         super().__init__()
         self.action_space_size = action_space_size
@@ -101,7 +102,8 @@ class MuZeroFullyConnectedNetwork(AbstractNetwork):
                 * observation_shape[1]
                 * observation_shape[2]
                 * (stacked_observations + 1)
-                + stacked_observations * observation_shape[1] * observation_shape[2],
+                + stacked_observations * observation_shape[1] * observation_shape[2]
+                + (encoding_size if include_previous_hidden_state else 0),
                 fc_representation_layers,
                 encoding_size,
             )
