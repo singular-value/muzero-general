@@ -1,0 +1,14 @@
+# this was produced using time_until_failure.py
+# which plays an N-qubit stabilizer game with 0 stacked observations
+# with random guessing until failure, for 2 <= N <= 9.
+# As the results (averaged over 500 runs per N) indicate, random guessing
+# suffices for an exponentially scaling number of iterations.
+
+2 6.692
+3 16.532
+4 33.712
+5 60.874
+6 124.494
+7 262.68
+8 508.048
+9 1061.392
