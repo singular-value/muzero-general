@@ -1,0 +1,17 @@
+# same as time_until_failure.py but against the hard stabilizer game,
+# where the first 2n rounds are played normally, but then we query
+# canonical stabilizers in subsequent rounds.
+# with a strategy of random guessing, the game ends shortly after 2n rounds.
+2 3.446
+3 5.516
+4 7.67
+5 9.908
+6 12.114
+7 14.67
+8 16.686
+9 18.906
+10 20.864
+11 22.992
+12 25.048
+13 26.964
+14 28.978
