@@ -254,6 +254,7 @@ class StabilizerEnv:
         self.state.set_num_qubits(self.n)
 
     def reset(self):
+        self.round = 0
         self.state = stim.TableauSimulator()
         self.current_observable = None
         return self.get_observation()

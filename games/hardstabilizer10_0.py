@@ -33,7 +33,7 @@ class MuZeroConfig:
         ### Self-Play
         self.num_workers = 1  # Number of simultaneous threads/workers self-playing to feed the replay buffer
         self.selfplay_on_gpu = False
-        self.max_moves = 500  # Maximum number of moves if game is not finished before
+        self.max_moves = 100  # Maximum number of moves if game is not finished before
         self.num_simulations = 50  # Number of future moves self-simulated
         self.discount = 0.978  # Chronological discount of the reward
         self.temperature_threshold = None  # Number of moves before dropping the temperature given by visit_softmax_temperature_fn to 0 (ie selecting the best action). If None, visit_softmax_temperature_fn is used every time
@@ -76,7 +76,7 @@ class MuZeroConfig:
         ### Training
         self.results_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), "../results", os.path.basename(__file__)[:-3], datetime.datetime.now().strftime("%Y-%m-%d--%H-%M-%S"))  # Path to store the model weights and TensorBoard logs
         self.save_model = True  # Save the checkpoint in results_path as model.checkpoint
-        self.training_steps = 3000  # Total number of training steps (ie weights update according to a batch)
+        self.training_steps = 10000  # Total number of training steps (ie weights update according to a batch)
         self.batch_size = 32  # Number of parts of games to train on at each training step
         self.checkpoint_interval = 10  # Number of training steps before using the model for self-playing
         self.value_loss_weight = 1  # Scale the value loss to avoid overfitting of the value function, paper recommends 0.25 (See paper appendix Reanalyze)
@@ -229,6 +229,8 @@ class StabilizerEnv:
 
     def update_state(self, action):
 
+        self.state.set_num_qubits(self.n + 1)
+
         self.state.h(self.n)
         for i, p in enumerate(self.current_observable):
             if p == 1:
@@ -249,8 +251,12 @@ class StabilizerEnv:
                     self.state.x(self.n)
                 break
 
+        self.state.set_num_qubits(self.n)
+
     def reset(self):
+        self.round = 0
         self.state = stim.TableauSimulator()
+        self.current_observable = None
         return self.get_observation()
 
     def render(self):
@@ -263,7 +269,6 @@ class StabilizerEnv:
             state.set_num_qubits(self.n)  # truncate the ancilla
             self.current_observable = state.canonical_stabilizers()[np.random.randint(self.n)]
             self.current_observable /= self.current_observable.sign  # discard the sign, we don't care
-            #print(state.canonical_stabilizers(), "\nchose: ", self.current_observable)
 
             observation = []
             char_to_obs = {0: [0, 0], 1: [1, 0], 2: [1, 1], 3: [0, 1]}
